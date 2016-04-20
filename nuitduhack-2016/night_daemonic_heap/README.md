@@ -1,4 +1,5 @@
 ##Writeup
+The challenge allowed users (players) to create characters, print their name, delete them and change their name. You could create either a barbarian or a wizzard (I only used barbarians).
 
 There was an off-by-one write when creating new characters which could be exploited using the "shrink_free_hole_alloc_overlap_consolidate_backward" technique found at  https://googleprojectzero.blogspot.se/2014/08/the-poisoned-nul-byte-2014-edition.html.
 
