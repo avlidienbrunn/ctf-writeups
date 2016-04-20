@@ -106,4 +106,4 @@ uid=1000(my_chall_pwned) gid=1000(pwned) groups=1000(pwned)
 cat /home/my_chall_pwned/flag
 He4p_H3ap$He4p?H0ur4\o/
 ```
-PS. Thanks for the help + rubber ducking + whatnot [alex](https://twitter.com/defendtheworld] \o/
+PS. Thanks for the help + rubber ducking + whatnot [alex](https://twitter.com/defendtheworld) \o/
