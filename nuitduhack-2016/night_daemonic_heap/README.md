@@ -3,7 +3,7 @@ The challenge allowed users (players) to create characters, print their name, de
 
 There was an off-by-one write when creating new characters which could be exploited using the "shrink_free_hole_alloc_overlap_consolidate_backward" technique found at  https://googleprojectzero.blogspot.se/2014/08/the-poisoned-nul-byte-2014-edition.html.
 
-It works by first allocatingthree blocks. Then free() the last one. Then making it smaller by overwriting the size field of the free() one (Allocated_block1 overwrites 1 byte into Freed_block2).
+It works by first allocating three blocks. Then free() the last one. Then making it smaller by overwriting the size field of the free() one (Allocated_block1 overwrites 1 byte into Freed_block2).
 
 After doing this we have a heap looking like:
 ```
