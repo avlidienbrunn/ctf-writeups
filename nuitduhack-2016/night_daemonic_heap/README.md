@@ -2,71 +2,71 @@ Use https://googleprojectzero.blogspot.se/2014/08/the-poisoned-nul-byte-2014-edi
 
 After doing this we have a heap looking like:
 |--------------------------------------------|
-|				Allocated_block1			 |
+|								Allocated_block1						 |
 |--------------------------------------------|
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
-|				Freed_block2				 | <- heap manager thinks this block is smaller than it is because we overflowed 1 byte from Allocated_block1
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
+|											 											 |
+|											 											 |
+|											 											 |
+|											 											 |
+|											 											 |
+|								 Freed_block2				         | <- heap manager thinks this block is smaller than it is because we 
+|											                       |    overflowed 1 byte from Allocated_block1
+|											 											 |
+|											 											 |
+|																			 			 |
+|																			 			 |
+|																			 			 |
+|																			 			 |
 |--------------------------------------------|
-|	Ghost space not seen by heap manager	 |
+|	    Ghost space not seen by heap manager	 |
 |--------------------------------------------|
-|				Allocated_block3			 |
+|								Allocated_block3		      	 |
 |--------------------------------------------|
 
 We then allocate 2 blocks inside Freed_block2, heap will look like:
 
 |--------------------------------------------|
-|				Allocated_block1			 |
+|								Allocated_block1					   |
 |--------------------------------------------|
-|				Allocated_block4			 |
+|								Allocated_block4					   |
 |--------------------------------------------|
-|				Allocated_block5			 |
+|								Allocated_block5					   |
 |--------------------------------------------|
-|											 | 
-|											 |
-|											 |
-|											 |
-|				Freed_block2				 | <- heap manager thinks this block is smaller than it is because we overflowed 1 byte from Allocated_block1
-|											 |
-|											 |
-|											 |
+|											 											 | 
+|																 						 |
+|																 						 |
+|																	 					 |
+|								Freed_block2								 | <- heap manager thinks this block is smaller than it is because we 
+|											 											 |    overflowed 1 byte from Allocated_block1
+|																			 			 |
+|																			 			 |
 |--------------------------------------------|
-|	Ghost space not seen by heap manager	 |
+|	   Ghost space not seen by heap manager	   |
 |--------------------------------------------|
-|				Allocated_block3			 |
+|								Allocated_block3					   |
 |--------------------------------------------|
 
 When we then free() Allocated_block4 and Allocated_block3, the entire block will be free()'d because the original previous size (stored in "Ghost space") will stil be there. Result:
 
 |--------------------------------------------|
-|				Allocated_block1			 |
+|					  		Allocated_block1			 			 |
 |--------------------------------------------|
-|											 |
+|											 											 |
 |- - - - - - - - - - - - - - - - - - - - - - |
-|				Allocated_block5			 |<- We still have a pointer to Allocated_block5, but the heap manager will think it's in free space = use-after-free scenario.
-|- - - - - - - - - - - - - - - - - - - - - - |
-|											 | 
-|											 |
-|											 |
-|											 |
-|				Freed_block2				 |
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
+|				  	 		Allocated_block5			 			 |<- We still have a pointer to Allocated_block5, but the heap manager will 
+|- - - - - - - - - - - - - - - - - - - - - - |   think it's in free space = use-after-free scenario.
+|											 											 | 
+|															 							 |
+|															 							 |
+|															 							 |
+|								Freed_block2								 |
+|											 											 |
+|																	 					 |
+|																	 					 |
+|																					 	 |
+|																				 		 |
+|																				 		 |
+|																				 		 |
 |--------------------------------------------|
 
 From here we can create a "write_what_where" scenario by placing the name string of one barbarian where the "pointer to barbarian name" inside Allocated_block5 is. This means we can control the name pointer of the barbarian allocated inside Allocated_block5. By changing it and using "print all", we can leak data anywhere. By changing it and using "change [whatever_string_is_at_that_address] [what_we_wanna_change_it_to]" we can write data anywhere.
@@ -96,5 +96,3 @@ cat /home/my_chall_pwned/flag
 He4p_H3ap$He4p?H0ur4\o/
 
 exploit:
-
-
