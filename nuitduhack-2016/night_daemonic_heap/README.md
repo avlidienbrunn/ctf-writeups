@@ -49,7 +49,7 @@ We then allocate 2 blocks inside Freed_block2, heap will look like:
 |				Allocated_block3			 |
 |--------------------------------------------|
 ```
-When we then free() Allocated_block4 and Allocated_block3, the entire block will be free()'d because the original previous size (stored in "Ghost space") will stil be there. Result:
+When we then free() Allocated_block4 and Allocated_block3, the entire block will be free()'d because the original previous size (stored in "Ghost space") will still be there. Result:
 ```
 |--------------------------------------------|
 |				Allocated_block1			 |
