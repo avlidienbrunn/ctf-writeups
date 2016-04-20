@@ -2,7 +2,7 @@
 
 There was an off-by-one write when creating new characters which could be exploited using the "shrink_free_hole_alloc_overlap_consolidate_backward" technique found at  https://googleprojectzero.blogspot.se/2014/08/the-poisoned-nul-byte-2014-edition.html.
 
-It works by allocating first three blocks. Then free() the last one. Then making it smaller by overwriting the size field of the free() one (Allocated_block1 overwrites 1 byte into Freed_block2).
+It works by first allocatingthree blocks. Then free() the last one. Then making it smaller by overwriting the size field of the free() one (Allocated_block1 overwrites 1 byte into Freed_block2).
 
 After doing this we have a heap looking like:
 ```
@@ -83,7 +83,7 @@ Using the same technique (shrink free chunk) we can leak addresses from the heap
 
 Since I didn't know which libc version it was running, I wrote a leak loop searching for system() and the rop gadget I used (add_rsp90_pop3ret). I guessed the starting offsets by using the offsets of my local libc. They were ~300 bytes off.
 
-We could then change the "print" function of one of the barbarians to point to the add_rsp_90_pop3ret gadget (rsp+0x90 will point to our input). That gadget would return intoto pop_rdi_ret (to get "/bin/sh" in rdi), which in turn returns to system().
+We could then change the "print" function of one of the barbarians to point to the add_rsp_90_pop3ret gadget (rsp+0x90 will point to our input). That gadget would return into pop_rdi_ret (to get "/bin/sh" in rdi), which in turn returns to system().
 
 Output of exploit:
 ```
