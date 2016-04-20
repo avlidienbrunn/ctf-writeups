@@ -1,3 +1,5 @@
+##Writeup
+
 There was an off-by-one write when creating new characters which could be exploited using the "shrink_free_hole_alloc_overlap_consolidate_backward" technique found at  https://googleprojectzero.blogspot.se/2014/08/the-poisoned-nul-byte-2014-edition.html.
 
 It works by allocating first three blocks. Then free() the last one. Then making it smaller by overwriting the size field of the free() one (Allocated_block1 overwrites 1 byte into Freed_block2).
