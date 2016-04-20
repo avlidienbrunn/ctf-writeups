@@ -73,11 +73,15 @@ When we then free() Allocated_block4 and Allocated_block3, the entire block will
 |--------------------------------------------|
 ```
 
-From here we can create a "write_what_where" scenario by placing the name string of one barbarian where the "pointer to barbarian name" inside Allocated_block5 is. This means we can control the name pointer of the barbarian allocated inside Allocated_block5. By changing it and using "print all", we can leak data anywhere. By changing it and using "change [whatever_string_is_at_that_address] [what_we_wanna_change_it_to]" we can write data anywhere.
+We can create a "write_what_where" by placing the name of a new barbarian over Allocated_block5. This means we can control the name pointer of the barbarian allocated inside Allocated_block5.
 
-Using the same technique (shrink free chunk) we can leak addresses from the heap. If we leak the VTable pointer of a barbarian, we can calculate the offset to got and then leak libc addresses. Since I didn't know which libc version it was running, I wrote a leak loop searching for system() as well as the rop gadget I used (add_rsp90_pop3ret). I guessed the offsets I started at by using my local libc and then started looking from there. They were ~300 bytes off.
+By changing the name of the new barbarian (and therefore changing the name pointer of Allocated_block5 barbarian) we can leak data anywhere. By changing it and using "change [whatever_string_is_at_that_address] [what_we_wanna_change_it_to]" we can write data anywhere.
 
-I then changed the "print" function of one of the barbarians to point to the add_rsp_90_pop3ret gadget (rsp+0x90 will point to our input). That gadget would return to pop_rdi_ret (to get "/bin/sh" in rdi), which in turn returns to system().
+Using the same technique (shrink free chunk) we can leak addresses from the heap. If we leak the VTable pointer of a barbarian, we can calculate the offset to got and then leak libc addresses.
+
+Since I didn't know which libc version it was running, I wrote a leak loop searching for system() and the rop gadget I used (add_rsp90_pop3ret). I guessed the starting offsets by using the offsets of my local libc. They were ~300 bytes off.
+
+We could then change the "print" function of one of the barbarians to point to the add_rsp_90_pop3ret gadget (rsp+0x90 will point to our input). That gadget would return intoto pop_rdi_ret (to get "/bin/sh" in rdi), which in turn returns to system().
 
 Output of exploit:
 Shrinking chunk and creating use-after-free state...
@@ -98,8 +102,3 @@ Dropping shell...
 uid=1000(my_chall_pwned) gid=1000(pwned) groups=1000(pwned)
 cat /home/my_chall_pwned/flag
 He4p_H3ap$He4p?H0ur4\o/
-
-exploit:
-
-
-```
