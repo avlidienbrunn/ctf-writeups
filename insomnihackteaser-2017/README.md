@@ -1,4 +1,5 @@
 **Reversing**
+
 The program allowed the user (robot) to enter a bunch of information:
 * name (max input length 255)
 * encryption method (either 0, 1 or 2)
