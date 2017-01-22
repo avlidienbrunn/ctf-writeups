@@ -27,7 +27,7 @@ Lastly, the "last words" were also put on the heap.
 
 Something that looked strange was that ```free(userinfo->location)``` was in the middle of the function (as opposed to at the end, like the other malloc()d stuff). This was indeed the key to the challenge.
 
-By simply using a "goal" larger than 204 bytes, we can overwrite the *location pointer, and when the program reaches ```free(userinfo->location)```, we can use it to free(anything). But wait a minute! Won't that screw up the chunk header/metadata? No, because this application was using jemalloc, so no metadata between data :)
+By simply using a "goal" larger than 204 bytes, we can overwrite the *location pointer, and when the program reaches ```free(userinfo->location)```, we can use it to free(anything).
 
 I used that to ```free(encryption_function_choice)```. This meant that the next time something of the same size would be allocated, malloc() would return the pointer to the encryption choice.
 
