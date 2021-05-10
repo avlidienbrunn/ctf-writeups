@@ -1,4 +1,5 @@
-##Writeup
+## Writeup
+
 The challenge allowed users (players) to create characters, print their name, delete them and change their name. You could create either a barbarian or a wizzard (I only used barbarians).
 
 There was an off-by-one write when creating new characters which could be exploited using the "shrink_free_hole_alloc_overlap_consolidate_backward" technique found at  https://googleprojectzero.blogspot.se/2014/08/the-poisoned-nul-byte-2014-edition.html.
@@ -8,71 +9,71 @@ It works by first allocating three blocks. Then free() the middle one. Then maki
 After doing this we have a heap looking like:
 ```
 |--------------------------------------------|
-|				Allocated_block1			 |
+|       Allocated_block1                     |
 |--------------------------------------------|
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
-|				Freed_block2				 | <- heap manager thinks this block is smaller 
-|											 | than it is because we overflowed 1 byte from 
-|											 | Allocated_block1
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
+|                                            |
+|                                            |
+|                                            |
+|                                            |
+|                                            |
+|        Freed_block2                        | <- heap manager thinks this block is smaller 
+|                                            | than it is because we overflowed 1 byte from 
+|                                            | Allocated_block1
+|                                            |
+|                                            |
+|                                            |
+|                                            |
+|                                            |
 |--------------------------------------------|
-|	Ghost space not seen by heap manager	 |
+| Ghost space not seen by heap manager       |
 |--------------------------------------------|
-|				Allocated_block3			 |
+|       Allocated_block3                     |
 |--------------------------------------------|
 ```
 We then allocate 2 blocks inside Freed_block2, heap will look like:
 ```
 |--------------------------------------------|
-|				Allocated_block1			 |
+|       Allocated_block1                     |
 |--------------------------------------------|
-|				Allocated_block4			 |
+|       Allocated_block4                     |
 |--------------------------------------------|
-|				Allocated_block5			 |
+|       Allocated_block5                     |
 |--------------------------------------------|
-|											 | 
-|											 |
-|											 |
-|											 |
-|				Freed_block2				 | <- heap manager thinks this block is smaller 
-|											 |   than it is because we overflowed 1 byte from 
-|											 |   Allocated_block1
-|											 |
+|                                            | 
+|                                            |
+|                                            |
+|                                            |
+|       Freed_block2                         | <- heap manager thinks this block is smaller 
+|                                            |   than it is because we overflowed 1 byte from 
+|                                            |   Allocated_block1
+|                                            |
 |--------------------------------------------|
-|	Ghost space not seen by heap manager	 |
+| Ghost space not seen by heap manager       |
 |--------------------------------------------|
-|				Allocated_block3			 |
+|       Allocated_block3                     |
 |--------------------------------------------|
 ```
 When we then free() Allocated_block4 and Allocated_block3, the entire block will be free()'d because the original previous size (stored in "Ghost space") will still be there. Result:
 ```
 |--------------------------------------------|
-|				Allocated_block1			 |
+|       Allocated_block1                     |
 |--------------------------------------------|
-|											 |
+|                                            |
 |- - - - - - - - - - - - - - - - - - - - - - |
-|				Allocated_block5			 |<- We still have a pointer to Allocated_block5, but the heap  
+|       Allocated_block5                     |<- We still have a pointer to Allocated_block5, but the heap  
 |- - - - - - - - - - - - - - - - - - - - - - |  manager will think it's in free space 
-|											 | = use-after-free scenario.
-|											 |
-|											 |
-|											 |
-|				Freed_block2				 |
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
-|											 |
+|                                            | = use-after-free scenario.
+|                                            |
+|                                            |
+|                                            |
+|       Freed_block2                         |
+|                                            |
+|                                            |
+|                                            |
+|                                            |
+|                                            |
+|                                            |
+|                                            |
 |--------------------------------------------|
 ```
 
